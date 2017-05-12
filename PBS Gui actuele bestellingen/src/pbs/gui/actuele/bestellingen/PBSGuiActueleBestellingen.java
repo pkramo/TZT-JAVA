@@ -64,11 +64,8 @@ private JButton KlantP;
         if(e.getSource()== ActB){
             ActueleBestellingen Actueel = new ActueleBestellingen();
             Actueel.setVisible(true);
-            if(e.getSource()== ActB){
-            AantalBestellingen Aantal = new AantalBestellingen();
-            Aantal.setVisible(true);
+             
         }
-    }
   }
   
   public static void main(String[] args) {
