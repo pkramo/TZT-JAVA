@@ -69,6 +69,6 @@ private JButton KlantP;
   
   public static void main(String[] args) {
        PBSGuiActueleBestellingen act = new PBSGuiActueleBestellingen();
-       System.out.println(act);      
+       System.out.println(act);
     }
 }
