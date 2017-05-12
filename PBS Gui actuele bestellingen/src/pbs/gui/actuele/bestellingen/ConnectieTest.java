@@ -28,7 +28,8 @@ public class ConnectieTest {
         Connection conn = null;
  
         try {
-            conn = DriverManager.getConnection("jdbc:mysql://localhost:3307/database pbs?", "root", "usbw");
+            conn = DriverManager.getConnection("jdbc:mysql://localhost/database pbs?" +
+                                                   "user=root&password=usbw");
             stmt = conn.createStatement();
             rs = stmt.executeQuery("SELECT * FROM Bestelling");
            

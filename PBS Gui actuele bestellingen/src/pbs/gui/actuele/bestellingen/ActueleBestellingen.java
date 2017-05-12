@@ -7,6 +7,11 @@ package pbs.gui.actuele.bestellingen;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
@@ -22,57 +27,39 @@ public class ActueleBestellingen extends JDialog implements ActionListener{
     private JLabel opvulling;
     private JPanel boven;
     private JLabel Welafg;
-    private JTable JT;
-    private DefaultTableModel DTM;
+    private JTable table;
+    
+    
     
     ActueleBestellingen() {
        setTitle("Actuele bestellingen");
        setSize(2000, 1000);
+       setLayout(new FlowLayout());
        
-       Welafg = new JLabel("Afgeleverd");
-       Welafg.setBounds(50,4,200,50);
-       this.add(Welafg);
+       String[] columnNames = {"Bestelling ID","Koerier ID", "klant ID", "Eindlocatie", "Beginlocatie","status"};
        
-       JLabel Nietafg = new JLabel("Onderweg");
-       Nietafg.setBounds(930,4,200,50);
-       this.add(Nietafg);
+       Object[][] Queries = {
+               {"1","2","3","4","5","6"},
+               {"12","23","34","45","56","67"},
+               {"123","234","345","456","567","678"},
+               {"1","2","3","4","5","6"},
+               {"1","2","3","4","5","6"}
+       };
+       table = new JTable(Queries, columnNames);
+       table.setPreferredScrollableViewportSize(new Dimension(1400,800));
+       table.setFillsViewportHeight(true);
+       
+       JScrollPane scrollpane = new JScrollPane(table);
+       add(scrollpane);
        
        Sluit = new JButton("Sluit");
        this.add(Sluit);
-       Sluit.setBounds(1830,0,80,50);
+       Sluit.setBounds(30,600,50,80);
        Sluit.addActionListener(this);
        
-       opvulling = new JLabel("");
-       opvulling.setBounds(500,500,10,10);
-       this.add(opvulling);
-       
-       links = new JPanel();
-       links.setBounds(0,50, 930,1000);
-       links.setBackground(Color.GREEN);
-       this.add(links);
-       
-       boven = new JPanel();
-       boven.setBounds(0,0,2000,50);
-       boven.setBackground(Color.WHITE);
-       this.add(boven);
-       
-       rechts = new JPanel();
-       rechts.setBounds(930,50,900,1000);
-       rechts.setBackground(Color.RED);
-       this.add(rechts);
-       
-       JT = new JTable();
-       String[] rows = {"Col1", "Col2", "Col3"};
-       String[][] cols = {};
-       DTM = new DefaultTableModel(cols, rows);
-       JT.setModel(DTM);
-       JScrollPane sp = new JScrollPane();
-       setSize(500,500);
-       JT.setBounds(50,50,850, 1000);
-       
-       
-       
 
+   
+       
        
     }
     public void actionPerformed(ActionEvent e){
@@ -80,5 +67,43 @@ public class ActueleBestellingen extends JDialog implements ActionListener{
             
             this.setVisible(false);
         }
-    }   
+    }
+    private static void executeQuery(){
+        Statement stmt = null;
+        ResultSet rs = null;
+        Connection conn = null;
+ 
+        try {
+            conn = DriverManager.getConnection("jdbc:mysql://localhost/database pbs?" +
+                                                   "user=root&password=usbw");
+            stmt = conn.createStatement();
+            rs = stmt.executeQuery("SELECT * FROM Bestelling");
+           
+            while(rs.next()){
+                System.out.println(rs.getString("Bestelling_id") );
+            }
+ 
+        }
+        catch (SQLException ex){
+            System.out.println("SQLException: " + ex.getMessage());
+            System.out.println("SQLState: " + ex.getSQLState());
+            System.out.println("VendorError: " + ex.getErrorCode());
+        }
+        finally {
+            //  release resources
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException sqlEx) { } // ignore
+                rs = null;
+            }
+ 
+            if (stmt != null) {
+                try {
+                    stmt.close();
+                } catch (SQLException sqlEx) { } // ignore
+                stmt = null;
+            }
+        }
+    }
 }
