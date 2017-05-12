@@ -7,55 +7,63 @@ import javax.swing.*;
  * @author hugoh
  */
 public class PBSGuiActueleBestellingen extends JFrame implements ActionListener {
-
 private JButton AanB;
 private JButton ActB;
 private JButton KlantZ;
 private JButton KlantP;
- private JPanel f;
 
+/**
+ * GETTERS 
+ */
+    public JButton getAanB() {
+        return AanB;
+    }
+    public JButton getActB() {
+        return ActB;
+    }
+    public JButton getKlantZ() {
+        return KlantZ;
+    }
+    public JButton getKlantP() {
+        return KlantP;
+    }
+    
     public PBSGuiActueleBestellingen(){
         setTitle("Begin Scherm Applicatie");
-        setSize(1200, 1000);
+        setSize(2000, 1000);
            
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
               
         AanB = new JButton("Aantal bestellingen");
-        this.AanB.setBounds(20,30,300,60);
-        this.AanB.addActionListener(this);
-                
+        AanB.setBounds(500,150,800,100);
         this.add(AanB);
                 
-        ActB = new JButton("Actuele bestellingen");
-        ActB.setBounds(20,100,300,60);
-        ActB.addActionListener(this);
-                
+        ActB = new JButton
+        ("Actuele bestellingen");
+        ActB.setBounds(500,300,800,100);
+        ActB.addActionListener(this);  
+        
         this.add(ActB);
         
         KlantZ = new JButton("Klant zakelijk");
-        KlantZ.setBounds(20,170,300,60);
+        KlantZ.setBounds(500,450,800,100);
         this.add(KlantZ);
         
         KlantP = new JButton("Klant particulier");
-        KlantP.setBounds(20,240,300,60);
+        KlantP.setBounds(500,600,800,100);
         this.add(KlantP);
         
         JLabel Afgeleverd = new JLabel("");
-        Afgeleverd.setBounds(800, 100,10 ,10 );
+        Afgeleverd.setBounds(300,750,800,100);
         this.add(Afgeleverd);
                 
         setVisible(true);
     }
     
   public void actionPerformed(ActionEvent e){
-        if(e.getSource()== AanB){
-            JOptionPane.showMessageDialog(null, "Aantal bestellingen");
-        }
-    }
-
-  public void actionPerformed1(ActionEvent e){
         if(e.getSource()== ActB){
-            JOptionPane.showMessageDialog(null, "Actuele bestellingen");
+            ActueleBestellingen Actueel = new ActueleBestellingen();
+            Actueel.setVisible(true);
         }
     }
   
@@ -64,37 +72,3 @@ private JButton KlantP;
        System.out.println(act);      
     }
 }
-
-abstract class ActueleBestellingen extends JFrame{
-                private JPanel f;
-                public ActueleBestellingen(){
-                this.add(f);
-                f.setSize(400,400);    
-                f.setLayout(null);    
-                f.setVisible(true);   
-                }
-                
-} 
-
-abstract class AantalBestellingen extends JFrame{
-                private JPanel f;
-                public AantalBestellingen(){
-                this.add(f);
-                f.setSize(400,400);    
-                f.setLayout(null);    
-                f.setVisible(true);   
-                }
-                
-} 
-
-abstract class KlantZakelijk extends JFrame{
-                private JPanel f;
-                public KlantZakelijk(){
-                this.add(f);
-                f.setSize(400,400);    
-                f.setLayout(null);    
-                f.setVisible(true);   
-                }
-                
-} 
-
