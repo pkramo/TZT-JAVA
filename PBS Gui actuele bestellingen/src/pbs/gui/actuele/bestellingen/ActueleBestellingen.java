@@ -8,6 +8,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 
 public class ActueleBestellingen extends JDialog implements ActionListener{
     private int BestellingId;
@@ -21,6 +22,8 @@ public class ActueleBestellingen extends JDialog implements ActionListener{
     private JLabel opvulling;
     private JPanel boven;
     private JLabel Welafg;
+    private JTable JT;
+    private DefaultTableModel DTM;
     
     ActueleBestellingen() {
        setTitle("Actuele bestellingen");
@@ -57,6 +60,16 @@ public class ActueleBestellingen extends JDialog implements ActionListener{
        rechts.setBounds(930,50,900,1000);
        rechts.setBackground(Color.RED);
        this.add(rechts);
+       
+       JT = new JTable();
+       String[] rows = {"Col1", "Col2", "Col3"};
+       String[][] cols = {};
+       DTM = new DefaultTableModel(cols, rows);
+       JT.setModel(DTM);
+       JScrollPane sp = new JScrollPane();
+       setSize(500,500);
+       JT.setBounds(50,50,850, 1000);
+       
        
        
 
