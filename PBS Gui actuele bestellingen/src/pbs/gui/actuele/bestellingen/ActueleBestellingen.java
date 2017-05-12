@@ -56,7 +56,11 @@ public class ActueleBestellingen extends JDialog implements ActionListener{
        rechts = new JPanel();
        rechts.setBounds(930,50,900,1000);
        rechts.setBackground(Color.RED);
-       this.add(rechts);       
+       this.add(rechts);
+       
+       
+
+       
     }
     public void actionPerformed(ActionEvent e){
         if(e.getSource()== Sluit){
