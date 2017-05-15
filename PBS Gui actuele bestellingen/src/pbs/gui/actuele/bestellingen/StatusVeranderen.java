@@ -31,6 +31,7 @@ public class StatusVeranderen extends JFrame {
     
     int Keuze;
     JPanel jp = new JPanel();
+    JButton jb = new JButton("Status updaten");
     JLabel jl = new JLabel("Bestelling nummer:   ");
     JFrame jf = new JFrame();
     JTextField jt = new JTextField(30);
@@ -50,11 +51,20 @@ public class StatusVeranderen extends JFrame {
         //jt = new JTextField("Please enter all your shit in here");
         jp.add(jl);
         jp.add(jt);
+        jp.add(jb);
         jp.add(jr1);
         jp.add(jr2);
         group.add(jr1);
         group.add(jr2);
         jt.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String input = jt.getText();
+                executeQuery(input, Keuze);
+            }
+        });
+        
+        jb.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String input = jt.getText();
@@ -99,10 +109,6 @@ public class StatusVeranderen extends JFrame {
             String sql = "Update bestelling Set BestellingGeleverd = " + Keuze + " Where Bestelling_id = " + input;
             stmt.executeUpdate(sql);
 
-            // Process the result set
-            while(rs.next()){
-                System.out.println(rs.getString("Bestelling_id") + "    " +  rs.getString("Koerier") + "    " +  rs.getString("Klant") + "    " +  rs.getString("Beginlocatie") + "    "  +  rs.getString("Eindlocatie"));
-            }
 
         }
         catch (SQLException ex){
