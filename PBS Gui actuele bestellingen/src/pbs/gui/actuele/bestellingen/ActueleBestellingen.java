@@ -12,6 +12,7 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import javax.management.Query;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
@@ -40,10 +41,6 @@ public class ActueleBestellingen extends JDialog implements ActionListener{
        
        Object[][] Queries = {
                {"1","2","3","4","5","6"},
-               {"12","23","34","45","56","67"},
-               {"123","234","345","456","567","678"},
-               {"1","2","3","4","5","6"},
-               {"1","2","3","4","5","6"}
        };
        table = new JTable(Queries, columnNames);
        table.setPreferredScrollableViewportSize(new Dimension(1400,800));
@@ -57,7 +54,7 @@ public class ActueleBestellingen extends JDialog implements ActionListener{
        Sluit.setBounds(30,600,50,80);
        Sluit.addActionListener(this);
        
-
+       executeQuery(table, "SELECT * bestelling");
    
        
        
@@ -68,21 +65,37 @@ public class ActueleBestellingen extends JDialog implements ActionListener{
             this.setVisible(false);
         }
     }
-    private static void executeQuery(){
-        Statement stmt = null;
+    private static void executeQuery(JTable table,String Query ){
+        Statement stat = null;
         ResultSet rs = null;
         Connection conn = null;
  
         try {
             conn = DriverManager.getConnection("jdbc:mysql://localhost/database pbs?" +
                                                    "user=root&password=usbw");
-            stmt = conn.createStatement();
-            rs = stmt.executeQuery("SELECT * FROM Bestelling");
+            stat = conn.createStatement();
+            rs = stat.executeQuery(Query);
            
-            while(rs.next()){
-                System.out.println(rs.getString("Bestelling_id") );
+            while(table.getRowCount() > 0) 
+        {
+            ((DefaultTableModel) table.getModel()).removeRow(0);
+        }
+        int columns = rs.getMetaData().getColumnCount();
+        
+        while(rs.next())
+        {  
+            Object[] row = new Object[columns];
+            for (int i = 1; i <= columns; i++)
+            {  
+                row[i - 1] = rs.getObject(i);
             }
- 
+            ((DefaultTableModel) table.getModel()).insertRow(rs.getRow()-1,row);
+        }
+
+        rs.close();
+        stat.close();
+        conn.close();
+    
         }
         catch (SQLException ex){
             System.out.println("SQLException: " + ex.getMessage());
@@ -98,12 +111,12 @@ public class ActueleBestellingen extends JDialog implements ActionListener{
                 rs = null;
             }
  
-            if (stmt != null) {
+            if (stat != null) {
                 try {
-                    stmt.close();
+                    stat.close();
                 } catch (SQLException sqlEx) { } // ignore
-                stmt = null;
+                stat = null;
             }
         }
-    }
+}
 }
