@@ -30,13 +30,23 @@ import java.sql.ResultSet;
 public class StatusVeranderen extends JFrame {
     
     int Keuze;
+    int rowsAffected = -1;
     JPanel jp = new JPanel();
+
     JButton jb = new JButton("Status updaten");
+    JLabel jl1 = new JLabel("Fatale error. Probeerd u het alstublieft opnieuw. Indien dit geen oplossing bied neemt u dan contact op met de systeembeheerder");
+    JLabel jl2 = new JLabel("Er is geen bestelling gevonden met dit bestelling ID");
+    JLabel jl3 = new JLabel("De status is succesvol gewijzigd");
     JLabel jl = new JLabel("Bestelling nummer:   ");
     JFrame jf = new JFrame();
     JTextField jt = new JTextField(30);
     JRadioButton jr1 = new JRadioButton("Aangemeld bij startlocatie");
     JRadioButton jr2 = new JRadioButton("Bezorgd bij eindlocatie");
+    
+    
+    
+    
+    
     
     ButtonGroup group = new ButtonGroup();
     public StatusVeranderen() {
@@ -45,17 +55,27 @@ public class StatusVeranderen extends JFrame {
         setVisible(true);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setResizable(false);
-        //jp = new JPanel();
-        //jp2 = new JPanel();
-        //jp.add(jl);
-        //jt = new JTextField("Please enter all your shit in here");
+        
+        
         jp.add(jl);
+        jp.add(jl1);
+        jp.add(jl2);
+        jp.add(jl3);
+        
+        jl1.setVisible(false);
+        jl2.setVisible(false);
+        jl3.setVisible(false);
         jp.add(jt);
+        
+        
         jp.add(jb);
         jp.add(jr1);
         jp.add(jr2);
         group.add(jr1);
         group.add(jr2);
+        
+        
+        
         jt.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -85,15 +105,17 @@ public class StatusVeranderen extends JFrame {
             Keuze = 2;
         }
     });
-        //jb = new JButton("Press me");
-        //jp.add(jb);
+       
         add(jp);
     }
     public static void main(String[] args){
         StatusVeranderen d = new StatusVeranderen();
     }
-
-    private static void executeQuery(String input, int Keuze){
+   
+    public void setRowsAffected(int rowsAffected) {
+        this.rowsAffected = rowsAffected;
+    }
+    private int executeQuery(String input, int Keuze){
         Statement stmt = null;
         ResultSet rs = null;
         Connection conn = null;
@@ -108,7 +130,26 @@ public class StatusVeranderen extends JFrame {
             // Execute Sql query
             String sql = "Update bestelling Set BestellingGeleverd = " + Keuze + " Where Bestelling_id = " + input;
             stmt.executeUpdate(sql);
-
+            
+            int rowsAffected = stmt.executeUpdate(sql);
+            System.out.println(rowsAffected);
+            
+            if (rowsAffected == 0){
+                jl1.setVisible(false);
+                jl2.setVisible(true);
+                jl3.setVisible(false);
+            }
+            else if (rowsAffected == 1){
+                jl1.setVisible(false);
+                jl2.setVisible(false);
+                jl3.setVisible(true);
+            }
+            else {
+                jl1.setVisible(true);
+                jl2.setVisible(false);
+                jl3.setVisible(false);
+            }   
+            
 
         }
         catch (SQLException ex){
@@ -132,5 +173,6 @@ public class StatusVeranderen extends JFrame {
                 stmt = null;
             }
         }
+        return 5;
     }
 }
