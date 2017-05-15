@@ -28,10 +28,16 @@ import java.sql.ResultSet;
  * Created by pjott on 11-5-2017.
  */
 public class StatusVeranderen extends JFrame {
+    
+    int Keuze;
     JPanel jp = new JPanel();
     JLabel jl = new JLabel("Bestelling nummer:   ");
     JFrame jf = new JFrame();
     JTextField jt = new JTextField(30);
+    JRadioButton jr1 = new JRadioButton("Aangemeld bij startlocatie");
+    JRadioButton jr2 = new JRadioButton("Bezorgd bij eindlocatie");
+    
+    ButtonGroup group = new ButtonGroup();
     public StatusVeranderen() {
         setTitle("Titel");
         setSize(1920, 1080);
@@ -44,16 +50,31 @@ public class StatusVeranderen extends JFrame {
         //jt = new JTextField("Please enter all your shit in here");
         jp.add(jl);
         jp.add(jt);
+        jp.add(jr1);
+        jp.add(jr2);
+        group.add(jr1);
+        group.add(jr2);
         jt.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String input = jt.getText();
-                executeQuery(input);
-
-
-
+                executeQuery(input, Keuze);
             }
         });
+        
+        jr1.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            Keuze = 1;
+        }
+    });
+        
+        jr2.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            Keuze = 2;
+        }
+    });
         //jb = new JButton("Press me");
         //jp.add(jb);
         add(jp);
@@ -62,7 +83,7 @@ public class StatusVeranderen extends JFrame {
         StatusVeranderen d = new StatusVeranderen();
     }
 
-    private static void executeQuery(String input){
+    private static void executeQuery(String input, int Keuze){
         Statement stmt = null;
         ResultSet rs = null;
         Connection conn = null;
@@ -75,7 +96,7 @@ public class StatusVeranderen extends JFrame {
             stmt = conn.createStatement();
 
             // Execute Sql query
-            String sql = "Update bestelling Set BestellingGeleverd = 0 Where Bestelling_id = " + input;
+            String sql = "Update bestelling Set BestellingGeleverd = " + Keuze + " Where Bestelling_id = " + input;
             stmt.executeUpdate(sql);
 
             // Process the result set
