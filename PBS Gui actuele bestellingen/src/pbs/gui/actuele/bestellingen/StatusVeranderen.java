@@ -30,13 +30,15 @@ import java.sql.ResultSet;
 public class StatusVeranderen extends JFrame {
     
     int Keuze;
+    String input;
     int rowsAffected = -1;
+    String naam;
     JPanel jp = new JPanel();
 
     JButton jb = new JButton("Status updaten");
     JLabel jl1 = new JLabel("Fatale error. Probeerd u het alstublieft opnieuw. Indien dit geen oplossing bied neemt u dan contact op met de systeembeheerder");
     JLabel jl2 = new JLabel("Er is geen bestelling gevonden met dit bestelling ID");
-    JLabel jl3 = new JLabel("De status is succesvol gewijzigd");
+    JLabel jl3 = new JLabel("De status van bestelling nummer van bezorger is succesvol gewijzigd");
     JLabel jl = new JLabel("Bestelling nummer:   ");
     JFrame jf = new JFrame();
     JTextField jt = new JTextField(30);
@@ -80,7 +82,8 @@ public class StatusVeranderen extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String input = jt.getText();
-                executeQuery(input, Keuze);
+                statusUpdaten(input, Keuze);
+                NaamOpvragen(input);
             }
         });
         
@@ -88,7 +91,8 @@ public class StatusVeranderen extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String input = jt.getText();
-                executeQuery(input, Keuze);
+                statusUpdaten(input, Keuze);
+                NaamOpvragen(input);
             }
         });
         
@@ -115,7 +119,9 @@ public class StatusVeranderen extends JFrame {
     public void setRowsAffected(int rowsAffected) {
         this.rowsAffected = rowsAffected;
     }
-    private int executeQuery(String input, int Keuze){
+    
+    //Status Updaten 
+    private int statusUpdaten(String input, int Keuze){
         Statement stmt = null;
         ResultSet rs = null;
         Connection conn = null;
@@ -131,6 +137,8 @@ public class StatusVeranderen extends JFrame {
             String sql = "Update bestelling Set BestellingGeleverd = " + Keuze + " Where Bestelling_id = " + input;
             stmt.executeUpdate(sql);
             
+            
+            //Controleren of er echt waardes zijn veranderd
             int rowsAffected = stmt.executeUpdate(sql);
             System.out.println(rowsAffected);
             
@@ -173,6 +181,46 @@ public class StatusVeranderen extends JFrame {
                 stmt = null;
             }
         }
+        //algemene return voor werking
         return 5;
     }
+    private String NaamOpvragen(String input){
+		Statement stmt = null;
+		ResultSet rs = null;
+		Connection conn = null;
+
+		try {
+                    conn = DriverManager.getConnection("jdbc:mysql://localhost:3307/database pbs?","root" , "usbw");
+		    stmt = conn.createStatement();
+		    rs = stmt.executeQuery("SELECT * FROM account WHERE Account_id in (SELECT Koerier FROM bestelling WHERE Bestelling_id = " + input + ")");
+		    
+		    while(rs.next()){
+                        naam = rs.getString("naam");
+                        System.out.println(naam);
+		    }
+                    
+		}
+		catch (SQLException ex){
+		    System.out.println("SQLException: " + ex.getMessage());
+		    System.out.println("SQLState: " + ex.getSQLState());
+		    System.out.println("VendorError: " + ex.getErrorCode());
+		}
+		finally {
+		    //  release resources
+		    if (rs != null) {
+		        try {
+		            rs.close();
+		        } catch (SQLException sqlEx) { } // ignore
+		        rs = null;
+		    }
+
+		    if (stmt != null) {
+		        try {
+		            stmt.close();
+		        } catch (SQLException sqlEx) { } // ignore
+		        stmt = null;
+		    }
+		}
+                return "Dit is een standaard return";
+	}
 }
